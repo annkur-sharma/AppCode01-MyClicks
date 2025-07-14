@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+Dockerfile
+docker-compose.yml
+.git
+.gitignore
+*.log
+.env
+.vscode
+*.tsbuildinfo
+archived-files

@@ -9,6 +9,7 @@ GUID_FILE="/app/guid.txt"
 GUID_LOG="$LOG_DIR/guid-log.log"
 
 mkdir -p "$PHOTOS_PUBLIC" "$PHOTOS_STATIC" "$LOG_DIR"
+chmod -R 777 "$PHOTOS_PUBLIC" "$PHOTOS_STATIC"
 touch "$LOG_DIR/upload.log" "$LOG_DIR/upload-errors.log" "$GUID_LOG"
 chmod 666 "$LOG_DIR"/*.log 2>/dev/null || true
 

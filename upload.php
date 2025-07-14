@@ -26,15 +26,46 @@ function compressImage($source, $destination) {
     }
 }
 
+function autoDeleteOldestIfLimitReached($dir, $maxFiles, $logFile) {
+    $photos = array_merge(
+    glob($dir . '*.jpg'),
+    glob($dir . '*.jpeg'),
+    glob($dir . '*.png'),
+    glob($dir . '*.gif')
+    );
+    usort($photos, function($a, $b) {
+        return filemtime($a) - filemtime($b);
+    });
+
+    if (count($photos) >= $maxFiles) {
+        $oldest = $photos[0];
+        if (is_file($oldest)) {
+            $deletedFile = basename($oldest);
+            unlink($oldest);
+            logEntry("Deleted oldest photo: $deletedFile to maintain {$maxFiles}-photo limit", $logFile);
+        }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
     $tmpName = $_FILES['photo']['tmp_name'];
+
     if (!is_uploaded_file($tmpName)) {
         logEntry("Upload error: not a valid file", $errorLogFile);
         die("Upload failed.");
     }
 
-    $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-    $newName = 'photo-' . bin2hex(random_bytes(5)) . '.' . strtolower($ext);
+    $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+        logEntry("Upload error: unsupported file type '$ext'", $errorLogFile);
+        die("Unsupported file type.");
+    }
+
+    // Auto-delete oldest photo if over limit
+    autoDeleteOldestIfLimitReached($uploadDir, 10, $logFile);
+
+    $newName = 'photo-' . bin2hex(random_bytes(5)) . '.' . $ext;
     $destPath = $uploadDir . $newName;
 
     compressImage($tmpName, $destPath);
@@ -44,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
         header("Location: /");
         exit;
     } else {
-        logEntry("Compression failed: $newName", $errorLogFile);
+        logEntry("Compression failed or file not saved: $newName", $errorLogFile);
         die("Upload failed during compression.");
     }
 }
