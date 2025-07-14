@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>📸 My Photo Gallery</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f5f5f5;
+      text-align: center;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 2rem;
+    }
+    .gallery img {
+      height: 120px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    .gallery img:hover {
+      transform: scale(1.1);
+    }
+    .nav {
+      margin-top: 1rem;
+    }
+    .nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      background: #007acc;
+      color: white;
+      padding: 0.5em 1em;
+      border-radius: 5px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal img {
+      max-height: 90%;
+      max-width: 90%;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📸 My Photo Gallery</h1>
+
+  <div class="nav">
+    <a href="/upload.html">Upload Photo</a>
+    <a href="/log-viewer.html">View Logs</a>
+  </div>
+
+  <p style="margin-top:1em; font-size:0.9em; color:gray;">
+    Container GUID: <span id="guid">loading...</span>
+  </p>
+
+  <div class="gallery" id="gallery"></div>
+
+  <div class="modal" id="modal" onclick="this.style.display='none'">
+    <img id="modal-img" src="">
+  </div>
+
+  <script>
+    fetch("/guid.php").then(r => r.text()).then(txt => {
+      document.getElementById("guid").textContent = txt.trim();
+    });
+
+    fetch("/photos/public/")
+      .then(r => r.text())
+      .then(html => {
+        const div = document.createElement("div");
+        div.innerHTML = html;
+        const links = div.querySelectorAll("a");
+        links.forEach(link => {
+          const href = link.getAttribute("href");
+          if (/\.(jpg|jpeg|png|gif)$/i.test(href)) {
+            const img = document.createElement("img");
+            img.src = "/photos/public/" + href;
+            img.onclick = () => {
+              document.getElementById("modal-img").src = img.src;
+              document.getElementById("modal").style.display = "flex";
+            };
+            document.getElementById("gallery").appendChild(img);
+          }
+        });
+      });
+  </script>
+</body>
+</html>

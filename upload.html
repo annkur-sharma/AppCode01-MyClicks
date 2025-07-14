@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>📤 Upload Photo</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; text-align: center; }
+    input[type=file] { margin-bottom: 1rem; }
+    .guid { font-size: 0.8em; color: gray; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>📤 Upload a Photo</h1>
+  <form action="upload.php" method="POST" enctype="multipart/form-data">
+    <input type="file" name="photo" accept="image/*" required><br>
+    <button type="submit">Upload</button>
+  </form>
+  <p class="guid">Container GUID: <span id="guid"></span></p>
+  <script>
+    fetch("/guid.php")
+      .then(res => res.text())
+      .then(guid => document.getElementById("guid").textContent = guid);
+  </script>
+</body>
+</html>

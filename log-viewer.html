@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📋 Log Viewer</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #f9f9f9;
+      color: #222;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 { margin-bottom: 1rem; }
+    .log-links { margin-bottom: 1.5rem; }
+    .log-links a {
+      display: inline-block;
+      background: #007acc;
+      color: white;
+      padding: 0.5em 1em;
+      margin: 0.5em;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .log-links a:hover {
+      background: #005a99;
+    }
+    #log-output {
+      background: #1e1e1e;
+      color: #dcdcdc;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 70vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      text-align: left;
+      margin-top: 1rem;
+      box-shadow: inset 0 0 10px #000;
+    }
+    .auto-refresh {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 View Logs</h1>
+
+  <div class="log-links">
+    <a href="#" onclick="selectLog('upload.log')">Upload Log</a>
+    <a href="#" onclick="selectLog('upload-errors.log')">Error Log</a>
+    <a href="#" onclick="selectLog('guid-log.log')">GUID Log</a>
+  </div>
+
+  <div class="auto-refresh">🔁 Auto-refreshing every 30 seconds</div>
+
+  <div id="log-output">Click a log above to view its contents.</div>
+
+  <div style="margin-top:2rem; font-size:0.8em; color:gray;">
+    Container GUID: <span id="guid"></span>
+  </div>
+
+  <script>
+    fetch("/guid.php")
+      .then(res => res.text())
+      .then(guid => document.getElementById("guid").textContent = guid);
+
+    let currentLog = null;
+    let interval = null;
+
+    function loadLog(filename) {
+      fetch('/logs/' + filename)
+        .then(res => res.ok ? res.text() : '❌ Failed to load log.')
+        .then(data => {
+          const lines = (data || '').trim().split('\n').reverse();
+          document.getElementById('log-output').textContent = lines.join('\n') || '📭 Log is empty.';
+        });
+    }
+
+    function selectLog(filename) {
+      currentLog = filename;
+      loadLog(currentLog);
+      if (interval) clearInterval(interval);
+      interval = setInterval(() => loadLog(currentLog), 30000);
+    }
+  </script>
+</body>
+</html>
