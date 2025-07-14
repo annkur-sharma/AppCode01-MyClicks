@@ -1,48 +1,49 @@
-# Node
-node_modules
-npm-debug.log
-yarn-debug.log
-yarn-error.log
-pnpm-debug.log
-
-# Next.js
-.next
-out
-
-# Logs
-*.log
-*.log.*
-
-# Build artifacts
-dist
-build
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# OS files
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# IDEs & Editors
-.vscode/
-.idea/
+# Editor files
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+*.idea/
+*.log
 *.swp
+*.bak
 
-# Docker <Publishing Dockerfile to Github>
-# Dockerfile
-# docker-compose.yml
-# .dockerignore
+# Runtime logs
+logs/*
+!logs/.keep
 
-# Test coverage
-coverage/
-*.lcov
+# Uploaded photos (generated at runtime)
+photos/public/*
+!photos/public/.keep
+
+# Static reference images (optional — remove if you want these versioned)
+photos/static/*
+!photos/static/.keep
+
+# Node / Python environments (if used later)
+node_modules/
+.env
+__pycache__/
+*.pyc
+
+# Docker artifacts
+*.tar
+*.gz
+*.zip
+.dockerignore
+
+# Git-specific
+*.orig
+*.rej
+
+# Build artifacts
+dist/
+build/
 
 # Misc
 *.tgz
 archived-files
 archived-files/*
-
-
