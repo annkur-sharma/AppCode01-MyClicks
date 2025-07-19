@@ -33,3 +33,42 @@ LICENSE
 # Docker related
 docker-compose.yml
 .dockerignore
+# Node and Python environments (just in case)
+node_modules
+.env
+*.pyc
+__pycache__/
+
+# Logs
+!logs/.keep
+
+# Photos (runtime data, not needed in image)
+# photos/public/*
+# photos/static/*
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Git files
+.git
+.gitignore
+
+# Build artifacts
+*.zip
+*.tar.gz
+
+# README and local docs
+README.md
+*.md
+LICENSE
+
+# Docker related
+docker-compose.yml
+.dockerignore
+
+# Other folders
+archived-files
+archived-files/*
