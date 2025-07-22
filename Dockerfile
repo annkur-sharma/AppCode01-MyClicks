@@ -35,4 +35,7 @@ RUN chmod +x /app/start.sh
 RUN ls -l /app/
 
 EXPOSE 80
+# Remove default entrypoint
+ENTRYPOINT []
+
 CMD ["/bin/sh", "/app/start.sh"]
