@@ -32,8 +32,9 @@ COPY . /app
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Ensure start script is executable and uses bash
-RUN chmod +x /app/start.sh
-RUN ls -l /app/
+RUN chmod +x /app/start.sh \
+ && sed -i 's/\r$//' /app/start.sh \
+ && ls -l /app/
 
 EXPOSE 80
 
