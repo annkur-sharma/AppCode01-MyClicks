@@ -30,12 +30,13 @@ COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 WORKDIR /app
 COPY . /app
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY start.sh /app/start.sh
+
+# Ensure start script is executable and uses bash
 RUN chmod +x /app/start.sh
 RUN ls -l /app/
 
 EXPOSE 80
-# Remove default entrypoint
-ENTRYPOINT []
 
-CMD ["/bin/sh", "/app/start.sh"]
+# Use bash explicitly to run your entrypoint script
+ENTRYPOINT []
+CMD ["bash", "/app/start.sh"]
