@@ -35,4 +35,4 @@ RUN chmod +x /app/start.sh
 RUN ls -l /app/
 
 EXPOSE 80
-CMD ["/app/start.sh"]
+CMD ["/bin/sh", "/app/start.sh"]
