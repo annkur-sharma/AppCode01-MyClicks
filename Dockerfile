@@ -30,6 +30,7 @@ COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 WORKDIR /app
 COPY . /app
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
 EXPOSE 80
