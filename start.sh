@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+set -euo pipefail
 
 PHOTOS_PUBLIC="/app/photos/public"
 PHOTOS_STATIC="/app/photos/static"
