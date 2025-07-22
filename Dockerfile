@@ -32,6 +32,7 @@ COPY . /app
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
+RUN ls -l /app/
 
 EXPOSE 80
 CMD ["/app/start.sh"]
