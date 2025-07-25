@@ -34,8 +34,9 @@ jobs:
     - name: Run container
       run: docker run -d -p 3025:80 my-clicks-app:v2
 
-    - name: Check running container
-      run: |
-        docker ps
-        docker logs $(docker ps -q)
-        curl -s http://localhost:3025 || echo "App not reachable"
+    - name: K8s Login
+      run: az acr login --name acr1h4is53m79d
+      run: docker tag my-clicks:v2 acr1h4is53m79d.azurecr.io/my-clicks:v2
+      run: docker push acr1h4is53m79d.azurecr.io/my-clicks:v2
+      run: az aks get-credentials --name "aks1-k8s" --resource-group "aks1-k8s-resources" --overwrite-existing
+      run: kubectl apply -f .\pod-K8s-ACRImage.yaml
