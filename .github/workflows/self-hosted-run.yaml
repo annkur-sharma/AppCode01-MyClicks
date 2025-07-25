@@ -32,7 +32,7 @@ jobs:
       run: trivy fs .
 
     - name: Run container
-      run: docker run -d -p 3025:80 my-clicks-app:v2
+      run: docker run -d -p 3026:80 my-clicks-app:v2
 
     - name: ACR Login
       run: az acr login --name acr1h4is53m79d
