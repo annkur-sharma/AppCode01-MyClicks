@@ -1,0 +1,44 @@
+name: Docker Runner Self Hosted
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Docker Login
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Lint Dockerfile
+      run: hadolint Dockerfile --ignore DL3018 --ignore SC2005 --ignore SC2086
+
+    - name: Docker Build
+      run: docker build --no-cache -t my-clicks-app:v2 .
+
+    - name: Trivy Image Scan
+      run: trivy image my-clicks-app:v2
+
+    - name: Trivy FS Scan
+      run: trivy fs .
+
+    - name: Run container
+      run: docker run -d -p 3025:80 my-clicks-app:v2
+
+    - name: Check running container
+      run: |
+        docker ps
+        docker logs $(docker ps -q)
+        curl -s http://localhost:3025 || echo "App not reachable"
