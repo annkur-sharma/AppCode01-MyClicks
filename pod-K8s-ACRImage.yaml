@@ -9,4 +9,4 @@ spec:
   - name: demo-app1-acr-image-container
     image: acr1h4is53m79d.azurecr.io/my-clicks-app:v2
     ports:
-    - containerPort: 3003
+    - containerPort: 80

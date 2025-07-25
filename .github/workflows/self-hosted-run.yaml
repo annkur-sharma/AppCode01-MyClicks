@@ -48,3 +48,6 @@ jobs:
 
     - name: K8s deploy
       run: kubectl apply -f .\pod-K8s-ACRImage.yaml
+
+    - name: K8s deploy
+      run: kubectl port-forward pod/demo-app1-acr-image 8686:80
