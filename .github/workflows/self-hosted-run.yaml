@@ -38,10 +38,10 @@ jobs:
       run: az acr login --name acr1h4is53m79d
 
     - name: Docker Tag
-      run: docker tag my-clicks:v2 acr1h4is53m79d.azurecr.io/my-clicks:v2
+      run: docker tag my-clicks-app:v2 acr1h4is53m79d.azurecr.io/my-clicks-app:v2
 
     - name: Docker Push
-      run: docker push acr1h4is53m79d.azurecr.io/my-clicks:v2
+      run: docker push acr1h4is53m79d.azurecr.io/my-clicks-app:v2
 
     - name: K8s Login
       run: az aks get-credentials --name "aks1-k8s" --resource-group "aks1-k8s-resources" --overwrite-existing
