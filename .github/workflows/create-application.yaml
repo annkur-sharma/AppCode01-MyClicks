@@ -1,0 +1,58 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Docker Login
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Install hadolint
+      run: |
+        wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+        chmod +x /bin/hadolint
+
+    - name: Lint Dockerfile
+      run: hadolint Dockerfile --ignore DL3018 --ignore SC2005 --ignore SC2086
+
+    - name: Docker Build
+      run: docker build --no-cache -t my-clicks-app:v2 .
+
+    - name: Install Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: image
+        image-ref: my-clicks-app:v2
+        format: table
+        severity: CRITICAL,HIGH
+
+    - name: Trivy FS Scan
+      run: |
+        trivy fs .
+
+    # Optional - Only works reliably on self-hosted runners
+    - name: Run container (Demo - May fail on hosted runner)
+      run: |
+        docker run -d -p 3025:80 my-clicks-app:v2 || true
+
